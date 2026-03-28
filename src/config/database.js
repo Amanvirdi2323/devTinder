@@ -2,7 +2,8 @@
 
  const connectDB = async () => {
     await mongoose.connect(
-       
+        "mongodb+srv://virdi123:23232323@virdinode.lj0uwsl.mongodb.net/"
+       // "mongodb+srv://virdi123:23232323@virdinode.lj0uwsl.mongodb.net/"
     )
  };
 
