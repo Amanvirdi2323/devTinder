@@ -17,7 +17,9 @@
     throw new Error("user does not exist");
    }
 
-    res.send(user);
+  // res.send(user);
+    req.user = user; 
+   
     next();
 }catch (err) {
         res.status(400).send("Error :" + err.message);
