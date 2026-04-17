@@ -1,5 +1,5 @@
 const express = require("express");
-//const {auth}= require("./middlewares/auth")
+const { userAuth }= require("./middlewares/auth")
 const app = express();
 const connectDB = require("./config/database");
 const User = require("./models/user");
@@ -103,31 +103,13 @@ catch(err){
 }
 });
 
-app.get("/profile", async(req,res) => {
-    try {
-    const cookies = req.cookies;
-
-    const { token } = cookies;
-    // validate my token
-     if (!token) {
-        throw new Error("Invalid token");
-     }
-    const decodeMessage = await jwt.verify(token, "DEV@ahoo123");
-    const { _id } = decodeMessage;
-    console.log("Logged in user is: " + _id);
-   // console.log(decodeMessage)
-
-   const user = await User.findById(_id);
-   if(!user) {
-    throw new Error("user does not exist");
-   }
-// console.log(cookies);
-    //res.send("reading cookies");
+app.get("/profile",userAuth, async(req,res) => {
+   try{
+    const user = req.user;
     res.send(user);
-}catch (err) {
+} catch (err) {
         res.status(400).send("Error :" + err.message);
     }
-
 });
 
 app.post("/login", async (req,res) =>{
@@ -137,12 +119,12 @@ app.post("/login", async (req,res) =>{
         if(!user) {
             throw new Error("invalid");
         }
-        const isPasswordValid = await bcrypt.compare(password, user.password);
+        const isPasswordValid = await user.validatePassword(password);
         if(isPasswordValid) {
        // create a jwt token
 
-       const token = await jwt.sign({_id: user._id}, "DEV@ahoo123");
-       console.log(token);
+       const token = await user.getJwt();
+      
 
        //add the token to cookie and send the response back to the user
 
@@ -155,10 +137,6 @@ app.post("/login", async (req,res) =>{
         res.status(400).send("Error :" + err.message);
     }
 });
-
-
-
-
 
 connectDB()
  .then ( () => {
