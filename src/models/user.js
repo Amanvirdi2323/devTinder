@@ -13,12 +13,12 @@ const userSchema = new mongoose.Schema({
         type: String
     },
    emailId: {
-  type: String,
-  required: true,
-  unique: true,
-  lowercase: true,
-  trim: true,
-    validate(value) {
+        type: String,
+        required: true,
+        unique: true,
+       lowercase: true,
+        trim: true,
+      validate(value) {
     if (!validator.isEmail(value)) {
       throw new Error("Invalid email");
     }
@@ -33,6 +33,9 @@ const userSchema = new mongoose.Schema({
     },
     gender: {
         type: String
+    },
+    skills: {
+        type: [String]
     },
 }, {
     timestamps: true

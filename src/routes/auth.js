@@ -1,5 +1,6 @@
 const express = require("express");
 const { validateSignUpData } = require("../utils/validation");
+const { validateEditProfileData } = require("../utils/validation");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -13,7 +14,7 @@ authRouter.post("/signup", async(req,res) => {
     // validation of data
     validateSignUpData(req);
 
-    const { firstName, lastName, emailId,  password } = req.body;
+    const { firstName, lastName, emailId,  password, skills } = req.body;
     //Encrypt the password
    const passwordHash = await bcrypt.hash(password, 10);
    console.log(passwordHash);
@@ -23,6 +24,7 @@ authRouter.post("/signup", async(req,res) => {
     lastName,
     emailId,
     password: passwordHash,
+    skills,
  });
        await user.save();
     res.send("user added successfully");
@@ -58,8 +60,17 @@ authRouter.post("/login", async (req,res) =>{
     }
 });
 
+authRouter.post("/logout", async (req,res) => {
+    res.cookie("token", null, {
+        expires: new Date(Date.now())
+    });
+    res.send("Logout successfully");
+});
 
-
+// authRouter.post("/logout", (req, res) => {
+//   res.clearCookie("token");
+//   res.send("Logout successful"); 
+// });
 
 
 module.exports = 

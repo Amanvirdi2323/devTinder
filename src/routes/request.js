@@ -9,6 +9,7 @@ requestRouter.post("/sendConnectionRequest", userAuth, async(req,res) =>{
     console.log("sending a connection request");
 
     res.send(user.firstName  + ' sent the connection request');
+  //  console.log(user.firstName  + '  sent the connection request');
 });
 
 
